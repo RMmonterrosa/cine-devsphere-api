@@ -1,6 +1,6 @@
 import express from "express"
 import { getPelicula, gidPelicula, postPelicula, pidPelicula, deletePelicula } from "../controllers/peliculas.controllers.js"
-import { getFuncion, gidFuncion, getFuncionHoy, getSala, postFuncion, pidFuncion, deleteFuncion } from "../controllers/funciones.controllers.js"
+import { getFuncion, gidFuncion, getFuncionHoy, getFuncionFiltro, getSala, postFuncion, pidFuncion, deleteFuncion } from "../controllers/funciones.controllers.js"
 import { subir, subirI } from "../config/path.js"
 
 
@@ -21,6 +21,8 @@ router.get('/funciones', getFuncion)
 router.get('/funciones/:id', gidFuncion) ///peliculas/:id/:idioma Ejemplo para dos variables
 
 router.get('/Cartelera', getFuncionHoy)
+
+router.get('/Cartelera/:fecha', getFuncionFiltro)
 
 router.get('/Cartelera/Sala/:id', getSala)
 

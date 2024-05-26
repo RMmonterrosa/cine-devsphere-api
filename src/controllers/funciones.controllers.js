@@ -22,8 +22,16 @@ export const getFuncionHoy = async (req, res) => {
 
     const pool = await getConne()
     const result = await pool.request()
-    .input('id', sql.Int, req.params.id)
     .query(`SELECT f.id_funcion, p.nombre AS pelicula, f.hora_inicio, f.fecha , f.id_sala FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = CAST(GETDATE() AS DATE) ORDER BY f.hora_inicio`)
+    res.json(result.recordset)
+}
+
+export const getFuncionFiltro = async (req, res) => {
+
+    const pool = await getConne()
+    const result = await pool.request()
+    .input('fecha', sql.VarChar, req.params.fecha)
+    .query(`SELECT f.id_funcion, p.nombre AS pelicula, f.hora_inicio, f.fecha FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = @fecha ORDER BY f.hora_inicio`)
     res.json(result.recordset)
 }
 
