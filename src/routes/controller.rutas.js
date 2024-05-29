@@ -27,11 +27,11 @@ router.put('/funciones/:id', pidFuncion)
 
 router.delete('/funciones/:id', deleteFuncion)
 
-router.get('/Cartelera', getFuncionHoy)
+router.get('/Cartelera/:idioma', getFuncionHoy)
 
-router.get('/Cartelera/:fecha', getFuncionFiltro)
+router.get('/Cartelera/:idioma/:fecha', getFuncionFiltro)
 
-router.get('/Cartelera/Sala/:id', getSala)
+router.get('/Sala/:id', getSala)
 
 router.get('/reservas', getReserva)
 

@@ -22,7 +22,8 @@ export const getFuncionHoy = async (req, res) => {
 
     const pool = await getConne()
     const result = await pool.request()
-    .query(`SELECT f.id_funcion, p.nombre AS pelicula, f.hora_inicio, f.fecha , f.id_sala FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = CAST(GETDATE() AS DATE) ORDER BY f.hora_inicio`)
+    .input('idioma', sql.Int, req.params.idioma)
+    .query(`SELECT f.id_funcion, p.nombre AS pelicula, f.hora_inicio, f.fecha , f.id_sala FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = CAST(GETDATE() AS DATE) and p.id_idioma = @idioma ORDER BY p.nombre, f.hora_inicio`)
     res.json(result.recordset)
 }
 
@@ -30,8 +31,9 @@ export const getFuncionFiltro = async (req, res) => {
 
     const pool = await getConne()
     const result = await pool.request()
+    .input('idioma', sql.Int, req.params.idioma)
     .input('fecha', sql.VarChar, req.params.fecha)
-    .query(`SELECT f.id_funcion, p.nombre AS pelicula, f.hora_inicio, f.fecha FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = @fecha ORDER BY f.hora_inicio`)
+    .query(`SELECT p.nombre AS pelicula, p.imagen, p.video, STRING_AGG(CONCAT(f.hora_inicio, ' ', f.id_funcion), ',') AS funciones FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = @fecha AND p.id_idioma = @idioma GROUP BY p.nombre, p.imagen, p.video`)
     res.json(result.recordset)
 }
 
