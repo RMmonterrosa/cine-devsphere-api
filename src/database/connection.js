@@ -1,6 +1,6 @@
 import conne from 'mssql'
 
-const dbConnec = 'Server=localhost,1433;Database=DevSphere;User Id=sa;Password=catolica;Encrypt=false'
+const dbConnec = 'Server=localhost,1433;Database=DevSphere;User Id=sa;Password=Sonic2002;Encrypt=false'
 
 
 export const getConne = async () => {
