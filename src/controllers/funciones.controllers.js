@@ -18,12 +18,12 @@ export const gidFuncion = async (req, res) => {
     res.json(result.recordset)
 }
 
-export const getFuncionHoy = async (req, res) => {
+export const getFuncionId = async (req, res) => {
 
     const pool = await getConne()
     const result = await pool.request()
-    .input('idioma', sql.Int, req.params.idioma)
-    .query(`SELECT f.id_funcion, p.nombre AS pelicula, f.hora_inicio, f.fecha , f.id_sala FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = CAST(GETDATE() AS DATE) and p.id_idioma = @idioma ORDER BY p.nombre, f.hora_inicio`)
+    .input('id', sql.Int, req.params.id)
+    .query(`SELECT f.id_funcion, p.nombre AS pelicula, p.imagen, f.hora_inicio, convert(varchar, f.fecha, 107) as fecha , f.id_sala, s.sala FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula JOIN salas s ON f.id_sala = s.id_sala WHERE f.id_funcion = @id`)
     res.json(result.recordset)
 }
 

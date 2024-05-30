@@ -1,6 +1,6 @@
 import express from "express"
 import { getPelicula, gidPelicula, postPelicula, pidPelicula, deletePelicula } from "../controllers/peliculas.controllers.js"
-import { getFuncion, gidFuncion, getFuncionHoy, getFuncionFiltro, getSala, postFuncion, pidFuncion, deleteFuncion } from "../controllers/funciones.controllers.js"
+import { getFuncion, gidFuncion, getFuncionId, getFuncionFiltro, getSala, postFuncion, pidFuncion, deleteFuncion } from "../controllers/funciones.controllers.js"
 import { getReserva, gidReserva, postReserva, pidReserva, deleteReserva } from "../controllers/reserva.controllers.js"
 import { subir, subirI } from "../config/path.js"
 
@@ -27,7 +27,7 @@ router.put('/funciones/:id', pidFuncion)
 
 router.delete('/funciones/:id', deleteFuncion)
 
-router.get('/Cartelera/:idioma', getFuncionHoy)
+router.get('/Cartelera/:id', getFuncionId)
 
 router.get('/Cartelera/:idioma/:fecha', getFuncionFiltro)
 
