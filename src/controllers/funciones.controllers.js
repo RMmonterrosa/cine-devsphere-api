@@ -33,7 +33,7 @@ export const getFuncionFiltro = async (req, res) => {
     const result = await pool.request()
     .input('idioma', sql.Int, req.params.idioma)
     .input('fecha', sql.VarChar, req.params.fecha)
-    .query(`SELECT p.nombre AS pelicula, p.id_pelicula, p.imagen, p.video, p.duracion, STRING_AGG(CONCAT(f.hora_inicio, ' ', f.id_funcion), ',') WITHIN GROUP (ORDER BY f.hora_inicio) AS horarios FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = '2024-05-29' AND p.id_idioma = 1 GROUP BY p.nombre, p.imagen, p.video, p.duracion, p.id_pelicula order by horarios`)
+    .query(`SELECT p.nombre AS pelicula, p.id_pelicula, p.imagen, p.video, p.duracion, STRING_AGG(CONCAT(f.hora_inicio, ' ', f.id_funcion), ',') WITHIN GROUP (ORDER BY f.hora_inicio) AS horarios FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = @fecha AND p.id_idioma = @idioma GROUP BY p.nombre, p.imagen, p.video, p.duracion, p.id_pelicula order by horarios`)
     res.json(result.recordset)
 }
 
