@@ -4,7 +4,7 @@ import sql from 'mssql'
 export const getFuncion = async (req, res) => { 
 
     const pool = await getConne()
-    const result = await pool.request().query('select * from funciones')
+    const result = await pool.request().query('select id_funcion, hora_inicio, convert(varchar, fecha, 23) as fecha, id_pelicula, id_sala from funciones')
     res.json(result.recordset) 
 
 }
@@ -14,7 +14,7 @@ export const gidFuncion = async (req, res) => {
     const pool = await getConne()
     const result = await pool.request()
     .input('id', sql.Int, req.params.id) 
-    .query('select * from funciones where id_funcion = @id')
+    .query('select id_funcion, hora_inicio, convert(varchar, fecha, 23) as fecha, id_pelicula, id_sala from funciones where id_funcion = @id')
     res.json(result.recordset)
 }
 
@@ -33,7 +33,7 @@ export const getFuncionFiltro = async (req, res) => {
     const result = await pool.request()
     .input('idioma', sql.Int, req.params.idioma)
     .input('fecha', sql.VarChar, req.params.fecha)
-    .query(`SELECT p.nombre AS pelicula, p.id_pelicula, p.imagen, p.video, p.duracion, STRING_AGG(CONCAT(f.hora_inicio, ' ', f.id_funcion), ',') AS funciones FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = @fecha AND p.id_idioma = @idioma GROUP BY p.nombre, p.imagen, p.video, p.duracion, p.id_pelicula`)
+    .query(`SELECT p.nombre AS pelicula, p.id_pelicula, p.imagen, p.video, p.duracion, STRING_AGG(CONCAT(f.hora_inicio, ' ', f.id_funcion), ',') WITHIN GROUP (ORDER BY f.hora_inicio) AS horarios FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = '2024-05-29' AND p.id_idioma = 1 GROUP BY p.nombre, p.imagen, p.video, p.duracion, p.id_pelicula order by horarios`)
     res.json(result.recordset)
 }
 
@@ -50,7 +50,8 @@ export const getSala = async (req, res) => {
 export const postFuncion = async (req, res) => {
 
     const pool = await getConne()
-    
+
+
     const result = await pool.request()
     .input('hora_inicio', sql.VarChar, req.body.hora_inicio)
     .input('fecha', sql.DateTime, req.body.fecha)
@@ -67,7 +68,7 @@ export const postFuncion = async (req, res) => {
 export const pidFuncion = async (req, res) => {
 
     const pool = await getConne()
-
+    console.log(req.body)
     const result = await pool.request()
     .input('id', sql.Int, req.params.id)
     .input('hora_inicio', sql.VarChar, req.body.hora_inicio)
