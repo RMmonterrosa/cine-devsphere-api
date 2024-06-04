@@ -4,7 +4,7 @@ import sql from 'mssql'
 export const getFuncion = async (req, res) => { 
 
     const pool = await getConne()
-    const result = await pool.request().query('select id_funcion, hora_inicio, convert(varchar, fecha, 23) as fecha, id_pelicula, id_sala from funciones')
+    const result = await pool.request().query('select f.id_funcion, f.hora_inicio, convert(varchar, f.fecha, 23) as fecha, f.id_pelicula, f.id_sala, p.nombre, s.sala from funciones f join peliculas p on f.id_pelicula = p.id_pelicula join salas s on f.id_sala = s.id_sala')
     res.json(result.recordset) 
 
 }
@@ -14,7 +14,7 @@ export const gidFuncion = async (req, res) => {
     const pool = await getConne()
     const result = await pool.request()
     .input('id', sql.Int, req.params.id) 
-    .query('select id_funcion, hora_inicio, convert(varchar, fecha, 23) as fecha, id_pelicula, id_sala from funciones where id_funcion = @id')
+    .query('select f.id_funcion, f.hora_inicio, convert(varchar, f.fecha, 23) as fecha, f.id_pelicula, f.id_sala, p.nombre, s.sala from funciones f join peliculas p on f.id_pelicula = p.id_pelicula join salas s on f.id_sala = s.id_sala where f.id_funcion = @id')
     res.json(result.recordset)
 }
 
@@ -33,7 +33,7 @@ export const getFuncionFiltro = async (req, res) => {
     const result = await pool.request()
     .input('idioma', sql.Int, req.params.idioma)
     .input('fecha', sql.VarChar, req.params.fecha)
-    .query(`SELECT p.nombre AS pelicula, p.id_pelicula, p.imagen, p.video, p.duracion, STRING_AGG(CONCAT(f.hora_inicio, ' ', f.id_funcion), ',') WITHIN GROUP (ORDER BY f.hora_inicio) AS horarios FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = @fecha AND p.id_idioma = @idioma GROUP BY p.nombre, p.imagen, p.video, p.duracion, p.id_pelicula order by horarios`)
+    .query(`SELECT p.nombre AS pelicula, p.id_pelicula, p.imagen, p.video, p.duracion, STRING_AGG(CONCAT(f.hora_inicio, ' ', f.id_funcion), ',') WITHIN GROUP (ORDER BY f.hora_inicio) AS funciones FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula WHERE f.fecha = @fecha AND p.id_idioma = @idioma GROUP BY p.nombre, p.imagen, p.video, p.duracion, p.id_pelicula order by funciones`)
     res.json(result.recordset)
 }
 
@@ -42,7 +42,7 @@ export const getSala = async (req, res) => {
     const pool = await getConne()
     const result = await pool.request()
     .input('id', sql.Int, req.params.id)
-    .query(`SELECT f.id_funcion, f.hora_inicio, p.nombre AS pelicula, s.sala AS sala, b.id_butaca, b.butaca AS butaca, CASE WHEN e.estado IS NULL THEN 'Vacía' ELSE 'Reservada' END AS estado_butaca FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula JOIN salas s ON f.id_sala = s.id_sala JOIN butacas b ON b.id_sala = s.id_sala LEFT JOIN reservas r ON r.id_butaca = b.id_butaca AND r.id_funcion = f.id_funcion LEFT JOIN estados e ON r.id_estado = e.id_estado WHERE f.id_funcion = @id`)
+    .query(`SELECT f.id_funcion, f.hora_inicio, p.nombre AS pelicula, s.sala AS sala, b.id_butaca, b.butaca AS butaca, s.id_sala, CASE WHEN e.estado IS NULL THEN 'Vacía' ELSE 'Reservada' END AS estado_butaca FROM funciones f JOIN peliculas p ON f.id_pelicula = p.id_pelicula JOIN salas s ON f.id_sala = s.id_sala JOIN butacas b ON b.id_sala = s.id_sala LEFT JOIN reservas r ON r.id_butaca = b.id_butaca AND r.id_funcion = f.id_funcion LEFT JOIN estados e ON r.id_estado = e.id_estado WHERE f.id_funcion = @id`)
     res.json(result.recordset) 
 
 }
@@ -51,7 +51,7 @@ export const postFuncion = async (req, res) => {
 
     const pool = await getConne()
 
-
+    console.log(req.body)
     const result = await pool.request()
     .input('hora_inicio', sql.VarChar, req.body.hora_inicio)
     .input('fecha', sql.DateTime, req.body.fecha)

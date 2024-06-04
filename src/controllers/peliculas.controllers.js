@@ -4,7 +4,7 @@ import sql from 'mssql'
 export const getPelicula = async (req, res) => { 
 
     const pool = await getConne()
-    const result = await pool.request().query('select * from peliculas')
+    const result = await pool.request().query('select p.id_pelicula, p.nombre, p.descripcion, p.director, p.duracion, p.imagen, p.video, p.id_idioma, p.id_estado, i.idioma, e.estado from peliculas p join idiomas i ON p.id_idioma = i.id_idioma join estados e on p.id_estado = e.id_estado')
     res.json(result.recordset) 
 
 }
