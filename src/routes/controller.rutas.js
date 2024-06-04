@@ -6,10 +6,12 @@ import { getIdioma } from "../controllers/idiomas.controllers.js"
 import { getEstado } from "../controllers/estados.controllers.js"
 import { getSalas } from "../controllers/salas.controllers.js"
 import { getButaca, getButacaSala } from "../controllers/butacas.controllers.js"
+import { mensaje } from "../correo/correo.js"
 import { subir, subirI } from "../config/path.js"
 
 
 const router = express()
+
 
 router.get('/peliculas', getPelicula)
 
@@ -56,6 +58,8 @@ router.get('/salas', getSalas)
 router.get('/butacas', getButaca)
 
 router.get('/butacas/:sala', getButacaSala)
+
+router.post('/send-email', mensaje)
 
 
 export default router 
