@@ -7,7 +7,7 @@ import sql from 'mssql'
 export const getReserva = async (req, res) => { 
 
     const pool = await getConne()
-    const result = await pool.request().query('select r.id_reserva, r.nombre, r.apellido, r.telefono, r.correo, r.id_funcion, r.id_butaca, r.id_estado, f.hora_inicio, b.butaca, e.estado, s.id_sala from reservas r join funciones f on r.id_funcion = f.id_funcion join butacas b on r.id_butaca = b.id_butaca join peliculas p on p.id_pelicula = f.id_pelicula join estados e on r.id_estado = e.id_estado join salas s on f.id_sala = s.id_sala')
+    const result = await pool.request().query('select r.id_reserva, r.nombre, r.apellido, r.telefono, r.correo, r.id_funcion, r.id_butaca, r.id_estado, f.hora_inicio, b.butaca, e.estado, s.id_sala, s.sala from reservas r join funciones f on r.id_funcion = f.id_funcion join butacas b on r.id_butaca = b.id_butaca join peliculas p on p.id_pelicula = f.id_pelicula join estados e on r.id_estado = e.id_estado join salas s on f.id_sala = s.id_sala')
     res.json(result.recordset)
 
 }
@@ -17,7 +17,7 @@ export const gidReserva = async (req, res) => {
     const pool = await getConne()
     const result = await pool.request()
     .input('id', sql.Int, req.params.id) 
-    .query('select * from reservas where id_reserva = @id')
+    .query('select r.id_reserva, r.nombre, r.apellido, r.telefono, r.correo, r.id_funcion, r.id_butaca, r.id_estado, f.hora_inicio, b.butaca, e.estado, s.id_sala, s.sala from reservas r join funciones f on r.id_funcion = f.id_funcion join butacas b on r.id_butaca = b.id_butaca join peliculas p on p.id_pelicula = f.id_pelicula join estados e on r.id_estado = e.id_estado join salas s on f.id_sala = s.id_sala where r.id_reserva = @id')
 
     res.json(result.recordset)
 }
